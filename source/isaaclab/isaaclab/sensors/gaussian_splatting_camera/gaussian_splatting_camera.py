@@ -38,7 +38,7 @@ from .gaussian_splatting_camera_data import GaussianSplattingCameraData
 from gsplat.rendering import rasterization
 
 if TYPE_CHECKING:
-    from .gaussian_camera_cfg import GaussianCameraCfg
+    from .gaussian_splatting_camera_cfg import GaussianSplattingCameraCfg
 import torch
 
 
