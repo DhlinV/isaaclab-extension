@@ -18,10 +18,8 @@ This is **not** the official Isaac Lab repository. If you’re looking for more 
 
 ## Key Features
 
-- **Robots**: 
-- **Environments**: 
-- **Physics**: 
-- **Sensors**: 
+- **Refined texture rendering**
+- **3DGS rendering with USD-based mesh**
 
 ## Acknowledgement
 

@@ -79,14 +79,16 @@ def create_prim_from_mesh(prim_path: str, mesh: trimesh.Trimesh, **kwargs):
         physics_material: The physics material to apply. Defaults to None.
     """
     # need to import these here to prevent isaacsim launching when importing this module
-    from pxr import UsdGeom
+    import isaacsim.core.utils.prims as prim_utils
+    # from pxr import UsdGeom
+    from pxr import UsdGeom, Gf, Usd, Sdf
 
     import isaaclab.sim as sim_utils
 
     # create parent prim
-    sim_utils.create_prim(prim_path, "Xform")
+    prim_utils.create_prim(prim_path, "Xform")
     # create mesh prim
-    prim = sim_utils.create_prim(
+    prim = prim_utils.create_prim(
         f"{prim_path}/mesh",
         "Mesh",
         translation=kwargs.get("translation"),
@@ -98,6 +100,7 @@ def create_prim_from_mesh(prim_path: str, mesh: trimesh.Trimesh, **kwargs):
             "subdivisionScheme": "bilinear",
         },
     )
+    
     # apply collider properties
     collider_cfg = sim_utils.CollisionPropertiesCfg(collision_enabled=True)
     sim_utils.define_collision_properties(prim.GetPrimPath(), collider_cfg)
@@ -115,6 +118,14 @@ def create_prim_from_mesh(prim_path: str, mesh: trimesh.Trimesh, **kwargs):
         display_prim_var = UsdGeom.Primvar(display_prim_attr)
         display_prim_var.SetInterpolation(UsdGeom.Tokens.vertex)
         display_prim_var.Set(rgba_colors[:, 3])
+        
+        try:
+            usd_mesh = UsdGeom.Mesh(prim)
+            primvars_api = UsdGeom.PrimvarsAPI(usd_mesh)
+            st_primvar = primvars_api.CreatePrimvar("st", Sdf.ValueTypeNames.TexCoord2fArray, UsdGeom.Tokens.vertex)
+            st_primvar.Set(mesh.visual.uvs)
+        except:
+            pass
 
     # create visual material
     if kwargs.get("visual_material") is not None:
